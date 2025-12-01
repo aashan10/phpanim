@@ -1,0 +1,17 @@
+{
+    "name": "aashan/phpanim",
+    "autoload": {
+        "psr-4": {
+            "Aashan\\Phpanim\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ashan Ghimire",
+            "email": "ashanghimire10@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^8.0"
+    }
+}
