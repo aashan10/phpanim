@@ -1,127 +1,147 @@
-# PHPAnim: 2D Animations with PHP and Raylib
+# PHPAnim: A Creative Coding Framework for PHP
 
-PHPAnim is a PHP library that allows you to create 2D animations and games using the popular [Raylib](https://www.raylib.com/) library. It provides a simple and intuitive API for drawing shapes, handling input, and creating complex animations.
+[![Latest Version](https://img.shields.io/packagist/v/aashan/phpanim.svg)](https://packagist.org/packages/aashan/phpanim)
+[![License](https://img.shields.io/packagist/l/aashan/phpanim.svg)](https://github.com/aashan/phpanim/blob/main/LICENSE.txt)
 
-This library leverages PHP's FFI (Foreign Function Interface) to directly call functions from the Raylib C library, offering near-native performance while allowing you to write your game logic entirely in PHP.
+**PHPAnim** is a creative coding framework for PHP that makes it possible to create 2D animations and interactive applications. It bridges the gap between the high-level, expressive power of PHP and the high-performance graphics capabilities of the [Raylib](https://www.raylib.com/) C library.
 
-## Features
+This is achieved using PHP's **FFI (Foreign Function Interface)**, which allows PHP code to call functions and use data structures from native, pre-compiled C libraries. What was once a simple library has evolved into a complete animation engine with a command-line interface, a plugin-based architecture, and a powerful animation scheduler.
 
-- **Direct Raylib Access:** Use Raylib's powerful and extensive API directly from your PHP code.
-- **Animation Scheduler:** A powerful scheduler that uses PHP Fibers to create complex, non-blocking animations with tweens, sequences, and parallel execution.
-- **Easy to Use:** A simple and intuitive API that makes it easy to get started with 2D animation in PHP.
-- **Cross-Platform:** Since Raylib is cross-platform, your PHPAnim applications can run on Windows, macOS, and Linux.
+## What is PHPAnim for?
+
+-   **Creative Coding & Algorithmic Art**: Generate visuals from algorithms, create mathematical visualizations, or experiment with generative art, all within your favorite language.
+-   **Prototyping Simple Games**: The simple, immediate-mode-like API is great for quickly prototyping 2D game mechanics.
+-   **Educational Tools**: Build interactive tools and simulations for educational purposes.
+-   **Pushing PHP to its Limits**: If you're curious about what PHP is capable of beyond web development, PHPAnim is a great way to explore its potential.
+
+## Core Features
+
+-   **Command-Line Interface**: A Symfony Console-based CLI for running and scaffolding your creations.
+-   **Scene-Based Architecture**: Organize your application's logic into self-contained `Scenes`.
+-   **Extensible via Plugins**: A simple yet powerful plugin system allows you to organize your code and extend the core functionality.
+-   **Powerful Animation Scheduler**: A unique scheduler built on top of PHP **Fibers**. It allows you to write complex, non-blocking, and sequential animations with a clean, readable, and fluent API.
+-   **High-Level Components**: PHPAnim includes built-in, high-level "Visualizations" like `XYGrid` and `Curve` that make it easy to create complex drawings with minimal code.
+-   **Direct Raylib Access**: Provides a thin, object-oriented wrapper around the native Raylib library. You can call Raylib functions as if they were native PHP methods.
 
 ## Getting Started
 
 ### Prerequisites
 
-- PHP 8.0 or higher with the FFI extension enabled.
-- Composer for package management.
-- A compiled Raylib shared library (`.so`, `.dll`, or `.dylib`).
+1.  **PHP >= 8.0**: PHPAnim relies on features introduced in PHP 8, such as Fibers.
+2.  **FFI Extension**: PHP's Foreign Function Interface extension must be enabled. Check by running `php -m | grep FFI`.
+3.  **Composer**: The project uses Composer to manage PHP dependencies.
+4.  **Raylib Shared Library**: You need a compiled Raylib shared library (`.so` on Linux, `.dylib` on macOS, `.dll` on Windows).
 
-### Installation
+### Installation and Setup
 
-1.  **Install PHPAnim:**
+1.  **Create a Project**:
+    ```bash
+    mkdir my-animation
+    cd my-animation
+    composer init
+    ```
 
+2.  **Install PHPAnim**:
     ```bash
     composer require aashan/phpanim
     ```
 
-2.  **Download Raylib:**
+3.  **Get the Raylib Library**:
+    Download the Raylib shared library from the [Raylib releases page](https://github.com/raysan5/raylib/releases). Create a `lib` folder in your project root and copy the library file into it (e.g., `lib/libraylib.dylib`).
 
-    Download a pre-compiled version of Raylib for your operating system from the [Raylib releases page](https://github.com/raysan5/raylib/releases).
+## Basic Usage
 
-    Alternatively, you can compile it from source.
+PHPAnim is designed around **Scenes** and **Plugins**.
 
-3.  **Place the Raylib library:**
+### 1. Create a Scene
 
-    Place the compiled Raylib library file (e.g., `libraylib.so`, `raylib.dll`, `libraylib.dylib`) in a location accessible to your project.
-
-### Basic Usage
-
-Here's a simple example of how to create a window and draw a moving rectangle:
+A scene contains the logic for one part of your application. Create a file `MyFirstScene.php`:
 
 ```php
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-
 use Aashan\Phpanim\Raylib;
+use Aashan\Phpanim\Scenes\SceneInterface;
 use Aashan\Phpanim\Scheduler;
 
-// Define the Raylib functions you want to use
-$def = "
-    typedef struct Color { unsigned char r, g, b, a; } Color;
-    void InitWindow(int, int, char *);
-    void CloseWindow();
-    bool WindowShouldClose();
-    void BeginDrawing();
-    void EndDrawing();
-    float GetFrameTime(void);
-    void SetTargetFPS(int fps);
-    int GetFPS(void);
-    void ClearBackground(Color color);
-    void DrawRectangle(int, int, int, int, Color);
-";
+class MyFirstScene implements SceneInterface
+{
+    private Scheduler $scheduler;
+    private object $state;
 
-// Create a new Raylib instance
-$rl = new Raylib(
-    path: '/path/to/your/libraylib.so', // Or .dll or .dylib
-    definition: $def
-);
+    public function __construct()
+    {
+        $this->state = new class {
+            public float $rectX = 100.0;
+        };
+    }
 
-// A simple object to hold the state of our rectangle
-class State {
-    public float $posX = 0;
-    public float $posY = 100;
-    public float $size = 100;
+    public function load(Raylib $rl): void
+    {
+        // Set up the animation sequence
+        $this->scheduler = new Scheduler($rl, $this->state);
+        $this->scheduler
+            ->tween('rectX', 100, 700, 2.0)
+            ->tween('rectX', 700, 100, 2.0)
+            ->repeat()
+            ->start();
+    }
+
+    public function update(Raylib $rl): void
+    {
+        $this->scheduler->update();
+
+        $white = $rl->struct('Color', ['r' => 245, 'g' => 245, 'b' => 245, 'a' => 255]);
+        $blue = $rl->struct('Color', ['r' => 0, 'g' => 121, 'b' => 241, 'a' => 255]);
+
+        $rl->ClearBackground($white);
+        $rl->DrawRectangle((int)$this->state->rectX, 100, 50, 50, $blue);
+        $rl->DrawText("FPS: " . $rl->GetFPS(), 10, 10, 20, $blue);
+    }
+
+    public function unload(Raylib $rl): void {}
+
+    public function done(Raylib $rl): bool
+    {
+        // Return true to finish the scene
+        return false;
+    }
 }
-$state = new State();
-
-// Initialize the window
-$rl->InitWindow(800, 600, "PHPAnim Basic Example");
-$rl->SetTargetFPS(60);
-
-// Create a scheduler to animate the rectangle
-$scheduler = new Scheduler($rl, $state);
-$scheduler
-    ->tween('posX', 0, 700, 2)
-    ->wait(1)
-    ->tween('posX', 700, 0, 2)
-    ->repeat()
-    ->start();
-
-// Main game loop
-while (!$rl->WindowShouldClose()) {
-    $rl->BeginDrawing();
-
-    // Update the animation
-    $scheduler->update();
-
-    // Clear the background
-    $white = $rl->struct('Color', ['r' => 255, 'g' => 255, 'b' => 255, 'a' => 255]);
-    $rl->ClearBackground($white);
-
-    // Draw the rectangle
-    $red = $rl->struct('Color', ['r' => 255, 'g' => 0, 'b' => 0, 'a' => 255]);
-    $rl->DrawRectangle((int)$state->posX, (int)$state->posY, (int)$state->size, (int)$state->size, $red);
-
-    // Display FPS
-    $rl->DrawText("FPS:" . $rl->GetFPS(), 20, 20, 20, $red);
-
-    $rl->EndDrawing();
-}
-
-$rl->CloseWindow();
 ```
+
+### 2. Create a Plugin
+
+Plugins register your scenes with the application. Create a `plugins` directory and add `main_plugin.php`:
+
+```php
+<?php
+// plugins/main_plugin.php
+
+require_once __DIR__ . '/../MyFirstScene.php';
+
+use Aashan\Phpanim\Plugins\SceneManagerPlugin;
+
+$sceneManager = new SceneManagerPlugin();
+$sceneManager->addScene('my-scene', new MyFirstScene());
+
+return $sceneManager;
+```
+
+### 3. Run the Animation
+
+Use the `phpanim` command-line tool to render your scene.
+
+```bash
+./vendor/bin/phpanim render \
+    --plugin-path=./plugins \
+    --raylib-dll-path=./lib/libraylib.dylib
+```
+
+A window should appear, showing a blue square animating back and forth.
+
 ## Documentation
 
-For more detailed information, please refer to the documentation in the `docs` directory:
-
-- [Getting Started](./docs/getting-started.md)
-- [Raylib API](./docs/raylib-api.md)
-- [Scheduler API](./docs/scheduler-api.md)
-- [Examples](./docs/examples.md)
+For more detailed information on the architecture, scheduler, visualizations, and CLI usage, please see the [**Full Documentation**](./docs/README.md).
 
 ## Contributing
 

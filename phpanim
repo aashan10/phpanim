@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+use Aashan\Phpanim\Phpanim;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$application = new Phpanim();
+
+$application->run();
