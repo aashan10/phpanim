@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Tasks;
 
 use App\Setup\Context;
+use App\Support\ConfigPath;
 
 final readonly class ExtractZipArchiveTask implements TaskInterface
 {
@@ -25,7 +26,7 @@ final readonly class ExtractZipArchiveTask implements TaskInterface
             throw new \RuntimeException('Failed to open zip archive.');
         }
 
-        $extractPath = dirname($archivePath).'/raylib';
+        $extractPath = ConfigPath::raylibPath();
         $zip->extractTo($extractPath);
         $zip->close();
 

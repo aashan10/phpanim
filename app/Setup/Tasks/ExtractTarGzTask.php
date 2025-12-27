@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Tasks;
 
 use App\Setup\Context;
+use App\Support\ConfigPath;
 
 final readonly class ExtractTarGzTask implements TaskInterface
 {
@@ -24,7 +25,7 @@ final readonly class ExtractTarGzTask implements TaskInterface
         $compressed = str_ends_with($archivePath, '.tar.gz') || str_ends_with($archivePath, '.tgz');
 
         $phar = new \PharData($archivePath);
-        $extractPath = dirname($archivePath);
+        $extractPath = ConfigPath::raylibPath();
 
         if ($compressed) {
             $extension = str_ends_with($archivePath, '.tar.gz') ? '.tar.gz' : '.tgz';

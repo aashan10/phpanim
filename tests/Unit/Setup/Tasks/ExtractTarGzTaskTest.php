@@ -3,6 +3,7 @@
 use App\Commands\SetupCommand;
 use App\Setup\Context;
 use App\Setup\Tasks\ExtractTarGzTask;
+use App\Support\ConfigPath;
 
 beforeEach(function () {
     $this->task = new ExtractTarGzTask;
@@ -22,15 +23,15 @@ beforeEach(function () {
         archivePath: null
     );
 
-    $this->storagePath = storage_path('raylib');
-    if (! is_dir($this->storagePath)) {
-        mkdir($this->storagePath, 0755, true);
+    $this->configPath = ConfigPath::raylibPath();
+    if (! is_dir($this->configPath)) {
+        mkdir($this->configPath, 0755, true);
     }
 });
 
 afterEach(function () {
-    if (isset($this->storagePath) && is_dir($this->storagePath)) {
-        $files = glob($this->storagePath.'/*');
+    if (isset($this->configPath) && is_dir($this->configPath)) {
+        $files = glob($this->configPath.'/*');
         foreach ($files as $file) {
             if (is_file($file)) {
                 unlink($file);

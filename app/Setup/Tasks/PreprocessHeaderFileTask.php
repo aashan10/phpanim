@@ -6,6 +6,7 @@ namespace App\Setup\Tasks;
 
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
+use App\Support\ConfigPath;
 
 final readonly class PreprocessHeaderFileTask implements TaskInterface
 {
@@ -16,7 +17,7 @@ final readonly class PreprocessHeaderFileTask implements TaskInterface
 
     public function execute(Context $context): Context
     {
-        if (!file_exists(storage_path('raylib/raylib.h'))) {
+        if (!file_exists(ConfigPath::raylibPath('raylib.h'))) {
             $context->io->error('raylib.h file not found. Please ensure that raylib is installed correctly.');
             throw new \RuntimeException('raylib.h file is missing.');
         }
@@ -29,14 +30,14 @@ final readonly class PreprocessHeaderFileTask implements TaskInterface
                 'Please preprocess the raylib.h file manually using a C compiler (e.g., `gcc -P -E raylib.h -o raylib.h`)'
             );
 
-            $context->io->info(sprintf('File to be processed: %s', storage_path('raylib/raylib.h')));
+            $context->io->info(sprintf('File to be processed: %s', ConfigPath::raylibPath('raylib.h')));
 
             return $context;
         }
 
         $command = sprintf('cc -P -E %s -o %s',
-            escapeshellarg(storage_path('raylib/raylib.h')),
-            escapeshellarg(storage_path('raylib/raylib.h'))
+            escapeshellarg(ConfigPath::raylibPath('raylib.h')),
+            escapeshellarg(ConfigPath::raylibPath('raylib.h'))
         );
         exec($command, $output, $returnVar);
 

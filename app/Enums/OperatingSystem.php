@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Support\ConfigPath;
+
 enum OperatingSystem: string
 {
     case WINDOWS = 'win32';
@@ -25,9 +27,9 @@ enum OperatingSystem: string
     public function dllPath(): string
     {
         return match ($this) {
-            self::WINDOWS => storage_path('raylib/raylib.dll'),
-            self::MACOS => storage_path('raylib/libraylib.dylib'),
-            self::LINUX => storage_path('raylib/libraylib.so'),
+            self::WINDOWS => ConfigPath::raylibPath('raylib.dll'),
+            self::MACOS => ConfigPath::raylibPath('libraylib.dylib'),
+            self::LINUX => ConfigPath::raylibPath('libraylib.so'),
         };
     }
 }

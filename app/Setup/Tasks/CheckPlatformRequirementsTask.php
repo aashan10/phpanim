@@ -7,6 +7,7 @@ namespace App\Setup\Tasks;
 use App\Enums\CpuArchitecture;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
+use App\Support\ConfigPath;
 
 final readonly class CheckPlatformRequirementsTask implements TaskInterface
 {
@@ -20,7 +21,7 @@ final readonly class CheckPlatformRequirementsTask implements TaskInterface
         $output = $context->io->getOutput();
         $verbose = $output->isVerbose();
 
-        $raylibDir = storage_path('raylib');
+        $raylibDir = ConfigPath::raylibPath();
 
         if (! is_dir($raylibDir)) {
             mkdir($raylibDir, 0755, true);

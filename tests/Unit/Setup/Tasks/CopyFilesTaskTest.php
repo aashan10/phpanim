@@ -4,6 +4,7 @@ use App\Commands\SetupCommand;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
 use App\Setup\Tasks\CopyFilesTask;
+use App\Support\ConfigPath;
 
 beforeEach(function () {
     $this->task = new CopyFilesTask;
@@ -18,9 +19,9 @@ beforeEach(function () {
         extractedPath: null
     );
 
-    $this->storagePath = storage_path('raylib');
-    if (! is_dir($this->storagePath)) {
-        mkdir($this->storagePath, 0755, true);
+    $this->configPath = ConfigPath::raylibPath();
+    if (! is_dir($this->configPath)) {
+        mkdir($this->configPath, 0755, true);
     }
 
 });

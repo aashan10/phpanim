@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Tasks;
 
 use App\Setup\Context;
+use App\Support\ConfigPath;
 use GuzzleHttp\RequestOptions;
 
 final readonly class DownloadRaylibTask implements TaskInterface
@@ -32,15 +33,15 @@ final readonly class DownloadRaylibTask implements TaskInterface
 
         $name = str_replace($extensions, '', $filename);
 
-        if (is_dir(storage_path('raylib/'.$name)) && ! $context->force) {
+        if (is_dir(ConfigPath::raylibPath($name)) && ! $context->force) {
             return $context->with([
-                'extractedPath' => storage_path('raylib/'.$filename),
+                'extractedPath' => ConfigPath::raylibPath($filename),
             ]);
         }
 
         $client = new \GuzzleHttp\Client;
         $client->request('GET', $downloadUrl, [
-            RequestOptions::SINK => storage_path('raylib/'.$filename),
+            RequestOptions::SINK => ConfigPath::raylibPath($filename),
             RequestOptions::PROGRESS => function (
                 $downloadTotal,
                 $downloadedBytes,
@@ -62,7 +63,7 @@ final readonly class DownloadRaylibTask implements TaskInterface
         }
 
         return $context->with([
-            'archivePath' => storage_path('raylib/'.$filename),
+            'archivePath' => ConfigPath::raylibPath($filename),
         ]);
     }
 }

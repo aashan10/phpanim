@@ -5,6 +5,7 @@ use App\Enums\CpuArchitecture;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
 use App\Setup\Tasks\CheckPlatformRequirementsTask;
+use App\Support\ConfigPath;
 use Illuminate\Console\OutputStyle;
 
 beforeEach(function () {
@@ -31,14 +32,14 @@ it('has correct task name', function () {
 it('creates raylib directory if it does not exist', function () {
     $this->mockOutput->shouldReceive('isVerbose')->andReturn(false);
 
-    $storagePath = storage_path('raylib');
-    if (is_dir($storagePath)) {
-        rmdir($storagePath);
+    $configPath = ConfigPath::raylibPath();
+    if (is_dir($configPath)) {
+        rmdir($configPath);
     }
 
     $result = $this->task->execute($this->context);
 
-    expect(is_dir($storagePath))->toBeTrue();
+    expect(is_dir($configPath))->toBeTrue();
     expect($result)->toBeInstanceOf(Context::class);
 });
 

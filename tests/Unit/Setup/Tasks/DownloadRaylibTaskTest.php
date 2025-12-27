@@ -3,6 +3,7 @@
 use App\Commands\SetupCommand;
 use App\Setup\Context;
 use App\Setup\Tasks\DownloadRaylibTask;
+use App\Support\ConfigPath;
 use Illuminate\Console\OutputStyle;
 
 beforeEach(function () {
@@ -24,14 +25,14 @@ beforeEach(function () {
         selectedAsset: $selectedAsset
     );
 
-    $this->storagePath = storage_path('raylib');
-    if (! is_dir($this->storagePath)) {
-        mkdir($this->storagePath, 0755, true);
+    $this->configPath = ConfigPath::raylibPath();
+    if (! is_dir($this->configPath)) {
+        mkdir($this->configPath, 0755, true);
     }
 });
 
 afterEach(function () {
-    $files = glob($this->storagePath.'/*');
+    $files = glob($this->configPath.'/*');
     foreach ($files as $file) {
         if (is_file($file)) {
             unlink($file);

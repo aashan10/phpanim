@@ -4,6 +4,7 @@ use App\Commands\SetupCommand;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
 use App\Setup\Tasks\PreprocessHeaderFileTask;
+use App\Support\ConfigPath;
 
 beforeEach(function () {
     $this->task = new PreprocessHeaderFileTask;
@@ -17,18 +18,18 @@ beforeEach(function () {
         raylibVersion: 'latest'
     );
 
-    $this->storagePath = storage_path('raylib');
-    if (! is_dir($this->storagePath)) {
-        mkdir($this->storagePath, 0755, true);
+    $this->configPath = ConfigPath::raylibPath();
+    if (! is_dir($this->configPath)) {
+        mkdir($this->configPath, 0755, true);
     }
 
-    $this->headerPath = $this->storagePath.'/raylib.h';
+    $this->headerPath = $this->configPath.'/raylib.h';
     file_put_contents($this->headerPath, '');
 });
 
 afterEach(function () {
-    if (isset($this->storagePath) && is_dir($this->storagePath)) {
-        $files = glob($this->storagePath.'/*');
+    if (isset($this->configPath) && is_dir($this->configPath)) {
+        $files = glob($this->configPath.'/*');
         foreach ($files as $file) {
             if (is_file($file)) {
                 unlink($file);

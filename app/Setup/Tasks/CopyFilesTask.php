@@ -6,6 +6,7 @@ namespace App\Setup\Tasks;
 
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
+use App\Support\ConfigPath;
 use Webmozart\Assert\Assert;
 
 final readonly class CopyFilesTask implements TaskInterface
@@ -25,7 +26,7 @@ final readonly class CopyFilesTask implements TaskInterface
             OperatingSystem::LINUX => 'libraylib.so',
         };
 
-        if (! $context->force && file_exists(storage_path('raylib/'.$destinationLibFileName)) && file_exists(storage_path('raylib/raylib.h'))) {
+        if (! $context->force && file_exists(ConfigPath::raylibPath($destinationLibFileName)) && file_exists(ConfigPath::raylibPath('raylib.h'))) {
             return $context;
         }
 
@@ -33,7 +34,7 @@ final readonly class CopyFilesTask implements TaskInterface
             throw new \RuntimeException('Extracted path is not set in context.');
         }
 
-        $destinationPath = storage_path('raylib');
+        $destinationPath = ConfigPath::raylibPath();
 
         if (! is_dir($destinationPath)) {
             mkdir($destinationPath, 0755, true);

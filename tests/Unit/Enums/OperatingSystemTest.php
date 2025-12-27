@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\OperatingSystem;
+use App\Support\ConfigPath;
 
 it('has correct enum values', function () {
     expect(OperatingSystem::WINDOWS->value)->toBe('win32');
@@ -26,17 +27,17 @@ it('detects Linux correctly', function () {
 
 it('returns correct dll path for Windows', function () {
     $windows = OperatingSystem::WINDOWS;
-    expect($windows->dllPath())->toBe(storage_path('raylib/raylib.dll'));
+    expect($windows->dllPath())->toBe(ConfigPath::raylibPath('raylib.dll'));
 });
 
 it('returns correct dll path for macOS', function () {
     $macos = OperatingSystem::MACOS;
-    expect($macos->dllPath())->toBe(storage_path('raylib/libraylib.dylib'));
+    expect($macos->dllPath())->toBe(ConfigPath::raylibPath('libraylib.dylib'));
 });
 
 it('returns correct dll path for Linux', function () {
     $linux = OperatingSystem::LINUX;
-    expect($linux->dllPath())->toBe(storage_path('raylib/libraylib.so'));
+    expect($linux->dllPath())->toBe(ConfigPath::raylibPath('libraylib.so'));
 });
 
 it('can detect current operating system', function () {
@@ -50,14 +51,14 @@ it('can detect current operating system', function () {
     ]);
 });
 
-it('dll paths use storage_path helper correctly', function () {
+it('dll paths use ConfigPath helper correctly', function () {
     $windows = OperatingSystem::WINDOWS;
     $macos = OperatingSystem::MACOS;
     $linux = OperatingSystem::LINUX;
 
-    expect($windows->dllPath())->toStartWith(storage_path(''));
-    expect($macos->dllPath())->toStartWith(storage_path(''));
-    expect($linux->dllPath())->toStartWith(storage_path(''));
+    expect($windows->dllPath())->toStartWith(ConfigPath::raylibPath());
+    expect($macos->dllPath())->toStartWith(ConfigPath::raylibPath());
+    expect($linux->dllPath())->toStartWith(ConfigPath::raylibPath());
 
     expect($windows->dllPath())->toEndWith('.dll');
     expect($macos->dllPath())->toEndWith('.dylib');
