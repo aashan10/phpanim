@@ -17,6 +17,8 @@ final class Context
         public readonly SetupCommand $io,
         public readonly bool $force = false,
         public readonly string $raylibVersion = 'latest',
+        public readonly Collection $assets = new Collection(),
+        public readonly ?array $selectedAsset = null,
     )
     {}
     public function with(array $changes): self
@@ -27,6 +29,8 @@ final class Context
             $changes['io'] ?? $this->io,
             $changes['force'] ?? $this->force,
             $changes['raylibVersion'] ?? $this->raylibVersion,
+            $changes['assets'] ?? $this->assets,
+            $changes['selectedAsset'] ?? $this->selectedAsset,
         );
     }
 }
