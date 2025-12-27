@@ -5,6 +5,7 @@ namespace App\Commands;
 use App\Enums\CpuArchitecture;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
+use App\Setup\Tasks\CheckPlatformRequirementsTask;
 use App\Setup\Tasks\TaskInterface;
 use LaravelZero\Framework\Commands\Command;
 
@@ -38,6 +39,7 @@ class SetupCommand extends Command
         );
 
         $tasks = [
+            app()->make(CheckPlatformRequirementsTask::class),
         ];
         $totalTasks = count($tasks);
 
