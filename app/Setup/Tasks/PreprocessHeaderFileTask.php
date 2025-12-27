@@ -29,7 +29,6 @@ readonly final class PreprocessHeaderFileTask implements TaskInterface
             return $context;
         }
 
-        $context->io->info('Preprocessing raylib.h file using cc');
         $command = sprintf('cc -P -E %s -o %s',
             escapeshellarg(storage_path('raylib/raylib.h')),
             escapeshellarg(storage_path('raylib/raylib.h'))
