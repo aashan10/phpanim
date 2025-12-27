@@ -5,22 +5,21 @@ namespace App\Commands;
 use App\Enums\CpuArchitecture;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
-use App\Setup\Tasks\CheckPlatformRequirementsTask;
-use App\Setup\Tasks\ChoosePlatformSpecificRaylibAssetTask;
-use App\Setup\Tasks\CleanupDownloadsTask;
-use App\Setup\Tasks\CopyFilesTask;
-use App\Setup\Tasks\DownloadRaylibTask;
-use App\Setup\Tasks\ExtractArchiveTask;
-use App\Setup\Tasks\FetchReleaseMetadataTask;
-use App\Setup\Tasks\PreprocessHeaderFileTask;
 use App\Setup\Tasks\TaskInterface;
 use LaravelZero\Framework\Commands\Command;
 
 class SetupCommand extends Command
 {
-    protected $signature = 'setup {--f|force : Force setup even if already configured} {--R|raylib-version=latest : Specify the raylib version to install} {--os : Operating System} {--arch : CPU Architecture}';
+    protected $signature = 'setup {--f|force : Force setup even if already configured} {--R|raylib-version=latest : Specify the raylib version to install} {--os= : Operating System} {--arch= : CPU Architecture}';
 
     protected $description = 'Command description';
+
+    public function __construct(
+        private readonly array $tasks = []
+    )
+    {
+        parent::__construct();
+    }
 
     public function handle(): int
     {
@@ -45,19 +44,9 @@ class SetupCommand extends Command
             raylibVersion: $raylibVersion,
         );
 
-        $tasks = [
-            app()->make(CheckPlatformRequirementsTask::class),
-            app()->make(FetchReleaseMetadataTask::class),
-            app()->make(ChoosePlatformSpecificRaylibAssetTask::class),
-            app()->make(DownloadRaylibTask::class),
-            app()->make(ExtractArchiveTask::class),
-            app()->make(CopyFilesTask::class),
-            app()->make(PreprocessHeaderFileTask::class),
-            app()->make(CleanupDownloadsTask::class),
-        ];
-        $totalTasks = count($tasks);
+        $totalTasks = count($this->tasks);
 
-        foreach($tasks as $index => $task) {
+        foreach($this->tasks as $index => $task) {
             if (!$task instanceof TaskInterface) {
                 continue;
             }

@@ -17,12 +17,11 @@ readonly final class ExtractTarGzTask implements TaskInterface
     {
         $archivePath = $context->archivePath;
 
-        $compressed = str_ends_with($archivePath, '.tar.gz') || str_ends_with($archivePath, '.tgz');
-
-
         if ($archivePath === null || !file_exists($archivePath)) {
             throw new \RuntimeException('Archive file does not exist.');
         }
+
+        $compressed = str_ends_with($archivePath, '.tar.gz') || str_ends_with($archivePath, '.tgz');
 
         $phar = new \PharData($archivePath);
         $extractPath = dirname($archivePath);
