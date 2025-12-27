@@ -7,6 +7,7 @@ use App\Enums\OperatingSystem;
 use App\Setup\Context;
 use App\Setup\Tasks\CheckPlatformRequirementsTask;
 use App\Setup\Tasks\ChoosePlatformSpecificRaylibAssetTask;
+use App\Setup\Tasks\DownloadRaylibTask;
 use App\Setup\Tasks\FetchReleaseMetadataTask;
 use App\Setup\Tasks\TaskInterface;
 use LaravelZero\Framework\Commands\Command;
@@ -44,6 +45,7 @@ class SetupCommand extends Command
             app()->make(CheckPlatformRequirementsTask::class),
             app()->make(FetchReleaseMetadataTask::class),
             app()->make(ChoosePlatformSpecificRaylibAssetTask::class),
+            app()->make(DownloadRaylibTask::class),
         ];
         $totalTasks = count($tasks);
 

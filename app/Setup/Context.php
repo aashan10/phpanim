@@ -19,6 +19,7 @@ final class Context
         public readonly string $raylibVersion = 'latest',
         public readonly Collection $assets = new Collection(),
         public readonly ?array $selectedAsset = null,
+        public readonly ?string $archivePath = null,
     )
     {}
     public function with(array $changes): self
@@ -31,6 +32,7 @@ final class Context
             $changes['raylibVersion'] ?? $this->raylibVersion,
             $changes['assets'] ?? $this->assets,
             $changes['selectedAsset'] ?? $this->selectedAsset,
+            $changes['archivePath'] ?? $this->archivePath,
         );
     }
 }
