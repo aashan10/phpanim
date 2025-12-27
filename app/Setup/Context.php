@@ -11,6 +11,9 @@ use Illuminate\Support\Collection;
 
 final class Context
 {
+    /**
+    * @param null|array{name: string, browser_download_url: string}[] $assets
+    */
     public function __construct(
         public readonly ?CpuArchitecture $arch,
         public readonly ?OperatingSystem $os,
@@ -20,6 +23,7 @@ final class Context
         public readonly Collection $assets = new Collection(),
         public readonly ?array $selectedAsset = null,
         public readonly ?string $archivePath = null,
+        public readonly ?string $extractedPath = null,
     )
     {}
     public function with(array $changes): self
@@ -33,6 +37,7 @@ final class Context
             $changes['assets'] ?? $this->assets,
             $changes['selectedAsset'] ?? $this->selectedAsset,
             $changes['archivePath'] ?? $this->archivePath,
+            $changes['extractedPath'] ?? $this->extractedPath,
         );
     }
 }
