@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 final readonly class FetchReleaseMetadataTask implements TaskInterface
 {
     private const RELEASES_API_URL = 'https://api.github.com/repos/raysan5/raylib/releases/tags/';
+
     private const LATEST_RELEASE_API_URL = 'https://api.github.com/repos/raysan5/raylib/releases/latest';
 
     public function getName(): string
@@ -23,7 +24,7 @@ final readonly class FetchReleaseMetadataTask implements TaskInterface
         $response = Http::get(
             url: $context->raylibVersion === 'latest'
                 ? self::LATEST_RELEASE_API_URL
-                : self::RELEASES_API_URL . $context->raylibVersion,
+                : self::RELEASES_API_URL.$context->raylibVersion,
         );
 
         if ($response->getStatusCode() !== 200) {
@@ -42,5 +43,4 @@ final readonly class FetchReleaseMetadataTask implements TaskInterface
 
         return $context;
     }
-
 }

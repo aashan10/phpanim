@@ -6,7 +6,7 @@ namespace App\Setup\Tasks;
 
 use App\Setup\Context;
 
-readonly final class ExtractTarGzTask implements TaskInterface
+final readonly class ExtractTarGzTask implements TaskInterface
 {
     public function getName(): string
     {
@@ -17,7 +17,7 @@ readonly final class ExtractTarGzTask implements TaskInterface
     {
         $archivePath = $context->archivePath;
 
-        if ($archivePath === null || !file_exists($archivePath)) {
+        if ($archivePath === null || ! file_exists($archivePath)) {
             throw new \RuntimeException('Archive file does not exist.');
         }
 
@@ -46,7 +46,7 @@ readonly final class ExtractTarGzTask implements TaskInterface
         }
 
         return $context->with([
-            'extractedPath' => sprintf("%s/%s", rtrim($extractPath, '/'), trim($folderName, '/'))
+            'extractedPath' => sprintf('%s/%s', rtrim($extractPath, '/'), trim($folderName, '/')),
         ]);
 
         return $context;

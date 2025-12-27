@@ -16,17 +16,16 @@ class SetupCommand extends Command
 
     public function __construct(
         private readonly array $tasks = []
-    )
-    {
+    ) {
         parent::__construct();
     }
 
     public function handle(): int
     {
-        $force         = $this->option('force') ?? false;
+        $force = $this->option('force') ?? false;
         $raylibVersion = $this->option('raylib-version') ?? 'latest';
-        $os            = $this->option('os') ?? null;
-        $arch          = $this->option('arch') ?? null;
+        $os = $this->option('os') ?? null;
+        $arch = $this->option('arch') ?? null;
 
         if ($os !== null) {
             $os = OperatingSystem::tryFrom($os);
@@ -37,25 +36,27 @@ class SetupCommand extends Command
         }
 
         $context = new Context(
-            arch:          $arch,
-            os:            $os,
-            io:            $this,
-            force:         $force,
+            arch: $arch,
+            os: $os,
+            io: $this,
+            force: $force,
             raylibVersion: $raylibVersion,
         );
 
         $totalTasks = count($this->tasks);
 
-        foreach($this->tasks as $index => $task) {
-            if (!$task instanceof TaskInterface) {
+        foreach ($this->tasks as $index => $task) {
+            if (! $task instanceof TaskInterface) {
                 continue;
             }
-            $this->task(sprintf("[Step %d of %d]: %s", $index + 1, $totalTasks, $task->getName()), function () use ($task, &$context) {
+            $this->task(sprintf('[Step %d of %d]: %s', $index + 1, $totalTasks, $task->getName()), function () use ($task, &$context) {
                 try {
                     $context = $task->execute($context);
+
                     return true;
                 } catch (\Throwable $e) {
                     $this->error($e->getMessage());
+
                     return false;
                 }
             });

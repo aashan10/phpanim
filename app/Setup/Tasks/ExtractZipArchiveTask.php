@@ -6,7 +6,7 @@ namespace App\Setup\Tasks;
 
 use App\Setup\Context;
 
-readonly final class ExtractZipArchiveTask implements TaskInterface
+final readonly class ExtractZipArchiveTask implements TaskInterface
 {
     public function getName(): string
     {
@@ -16,16 +16,16 @@ readonly final class ExtractZipArchiveTask implements TaskInterface
     public function execute(Context $context): Context
     {
         $archivePath = $context->archivePath;
-        if ($archivePath === null || !file_exists($archivePath)) {
+        if ($archivePath === null || ! file_exists($archivePath)) {
             throw new \RuntimeException('Archive file does not exist.');
         }
 
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         if ($zip->open($archivePath) !== true) {
             throw new \RuntimeException('Failed to open zip archive.');
         }
 
-        $extractPath = dirname($archivePath) . '/raylib';
+        $extractPath = dirname($archivePath).'/raylib';
         $zip->extractTo($extractPath);
         $zip->close();
 
@@ -36,7 +36,7 @@ readonly final class ExtractZipArchiveTask implements TaskInterface
         unlink($archivePath);
 
         return $context->with([
-            'extractedPath' => sprintf("%s/%s", rtrim($extractPath, '/'), trim($folderName, '/'))
+            'extractedPath' => sprintf('%s/%s', rtrim($extractPath, '/'), trim($folderName, '/')),
         ]);
     }
 }

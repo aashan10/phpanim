@@ -7,7 +7,7 @@ namespace App\Setup\Tasks;
 use App\Setup\Context;
 use GuzzleHttp\RequestOptions;
 
-readonly final class DownloadRaylibTask implements TaskInterface
+final readonly class DownloadRaylibTask implements TaskInterface
 {
     public function getName(): string
     {
@@ -32,27 +32,27 @@ readonly final class DownloadRaylibTask implements TaskInterface
 
         $name = str_replace($extensions, '', $filename);
 
-        if (is_dir(storage_path('raylib/' . $name)) && !$context->force) {
+        if (is_dir(storage_path('raylib/'.$name)) && ! $context->force) {
             return $context->with([
-                'extractedPath' => storage_path('raylib/' . $filename),
+                'extractedPath' => storage_path('raylib/'.$filename),
             ]);
         }
 
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client;
         $client->request('GET', $downloadUrl, [
-            RequestOptions::SINK => storage_path('raylib/' . $filename),
+            RequestOptions::SINK => storage_path('raylib/'.$filename),
             RequestOptions::PROGRESS => function (
                 $downloadTotal,
                 $downloadedBytes,
                 $uploadTotal,
                 $uploadedBytes
-            ) use(&$progressBar, $context) {
+            ) use (&$progressBar, $context) {
                 if ($progressBar === null) {
-                    $progressBar = $context->io->getOutput()->createProgressBar();
-                    $progressBar->start();
+                    $progressBar = $context->io->getOutput()?->createProgressBar();
+                    $progressBar?->start();
                 }
 
-                $progressBar->setProgress($downloadedBytes);
+                $progressBar?->setProgress($downloadedBytes);
             },
         ]);
 
@@ -62,8 +62,7 @@ readonly final class DownloadRaylibTask implements TaskInterface
         }
 
         return $context->with([
-            'archivePath' => storage_path('raylib/' . $filename),
+            'archivePath' => storage_path('raylib/'.$filename),
         ]);
     }
-
 }

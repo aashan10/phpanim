@@ -8,7 +8,7 @@ use App\Enums\CpuArchitecture;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
 
-readonly final class CheckPlatformRequirementsTask implements TaskInterface
+final readonly class CheckPlatformRequirementsTask implements TaskInterface
 {
     public function getName(): string
     {
@@ -22,10 +22,10 @@ readonly final class CheckPlatformRequirementsTask implements TaskInterface
 
         $raylibDir = storage_path('raylib');
 
-        if (!is_dir($raylibDir)) {
+        if (! is_dir($raylibDir)) {
             mkdir($raylibDir, 0755, true);
             if ($verbose) {
-                $context->io->info("\nCreated directory for Raylib assets at: " . $raylibDir);
+                $context->io->info("\nCreated directory for Raylib assets at: ".$raylibDir);
             }
         }
 
@@ -34,7 +34,7 @@ readonly final class CheckPlatformRequirementsTask implements TaskInterface
             $context = $context->with(['os' => $os]);
 
             if ($verbose) {
-                $context->io->info("\nDetected Operating System: " . $os->value);
+                $context->io->info("\nDetected Operating System: ".$os->value);
             }
         }
 
@@ -43,7 +43,7 @@ readonly final class CheckPlatformRequirementsTask implements TaskInterface
             $context = $context->with(['arch' => $arch]);
 
             if ($verbose) {
-                $context->io->info("\nDetected CPU Architecture: " . $arch->value);
+                $context->io->info("\nDetected CPU Architecture: ".$arch->value);
             }
         }
 

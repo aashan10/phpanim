@@ -7,7 +7,7 @@ namespace App\Setup\Tasks;
 use App\Enums\OperatingSystem;
 use App\Setup\Context;
 
-readonly final class PreprocessHeaderFileTask implements TaskInterface
+final readonly class PreprocessHeaderFileTask implements TaskInterface
 {
     public function getName(): string
     {
@@ -16,9 +16,14 @@ readonly final class PreprocessHeaderFileTask implements TaskInterface
 
     public function execute(Context $context): Context
     {
+        if (!file_exists(storage_path('raylib/raylib.h'))) {
+            $context->io->error('raylib.h file not found. Please ensure that raylib is installed correctly.');
+            throw new \RuntimeException('raylib.h file is missing.');
+        }
+
         if ($context->os === OperatingSystem::WINDOWS) {
             $context->io->warn(
-                'PHPAnim uses raylib.h for defining FFI interfaces. ' .
+                'PHPAnim uses raylib.h for defining FFI interfaces. '.
                 'The default raylib.h file contains stuff like preprocessor macros, comments and conditional compilation directives (#include, #ifdef and single/multi line comments) that are not supported by PHP FFI. '.
                 'As of now, we don\'t have an automated way to preprocess the header file on Windows. '.
                 'Please preprocess the raylib.h file manually using a C compiler (e.g., `gcc -P -E raylib.h -o raylib.h`)'
@@ -39,6 +44,7 @@ readonly final class PreprocessHeaderFileTask implements TaskInterface
             $context->io->error('Failed to preprocess raylib.h file. Please ensure that a C compiler is installed and accessible from the command line.');
             throw new \RuntimeException('Preprocessing raylib.h failed.');
         }
+
         return $context;
     }
 }

@@ -6,7 +6,7 @@ namespace App\Setup\Tasks;
 
 use App\Setup\Context;
 
-readonly final class CleanupDownloadsTask implements TaskInterface
+final readonly class CleanupDownloadsTask implements TaskInterface
 {
     public function getName(): string
     {
@@ -29,7 +29,7 @@ readonly final class CleanupDownloadsTask implements TaskInterface
     {
         $files = array_diff(scandir($extractedPath) ?? [], ['.', '..']);
         foreach ($files as $file) {
-            $filePath = $extractedPath . DIRECTORY_SEPARATOR . $file;
+            $filePath = $extractedPath.DIRECTORY_SEPARATOR.$file;
             if (is_dir($filePath)) {
                 $this->deleteDirectory($filePath);
             } else {

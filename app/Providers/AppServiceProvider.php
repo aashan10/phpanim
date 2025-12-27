@@ -3,14 +3,14 @@
 namespace App\Providers;
 
 use App\Commands\SetupCommand;
-use App\Setup\Tasks\CleanupDownloadsTask;
-use App\Setup\Tasks\PreprocessHeaderFileTask;
-use App\Setup\Tasks\CopyFilesTask;
-use App\Setup\Tasks\ExtractArchiveTask;
-use App\Setup\Tasks\DownloadRaylibTask;
-use App\Setup\Tasks\ChoosePlatformSpecificRaylibAssetTask;
-use App\Setup\Tasks\FetchReleaseMetadataTask;
 use App\Setup\Tasks\CheckPlatformRequirementsTask;
+use App\Setup\Tasks\ChoosePlatformSpecificRaylibAssetTask;
+use App\Setup\Tasks\CleanupDownloadsTask;
+use App\Setup\Tasks\CopyFilesTask;
+use App\Setup\Tasks\DownloadRaylibTask;
+use App\Setup\Tasks\ExtractArchiveTask;
+use App\Setup\Tasks\FetchReleaseMetadataTask;
+use App\Setup\Tasks\PreprocessHeaderFileTask;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
