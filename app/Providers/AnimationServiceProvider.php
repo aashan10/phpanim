@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Enums\OperatingSystem;
+use Phpanim\Animations\AnimationQueue;
+use Phpanim\Events\EventDispatcher;
 use Phpanim\Raylib\Raylib;
 use App\Support\ConfigPath;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,14 @@ class AnimationServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(EventDispatcher::class, function () {
+            return new EventDispatcher();
+        });
+
+        $this->app->singleton(AnimationQueue::class, function () {
+            return new AnimationQueue();
+        });
+
         $this->app->singleton(Raylib::class, function () {
             $os = OperatingSystem::detect();
 

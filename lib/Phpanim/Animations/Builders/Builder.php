@@ -26,4 +26,21 @@ abstract class Builder implements BuilderInterface
             ->duration($duration);
     }
 
+    public function custom(callable $callback, float $duration = 1.0): CustomBuilder
+    {
+        return app()
+            ->make(CustomBuilder::class, ['parent' => $this])
+            ->callback($callback)
+            ->duration($duration)
+            ->target($this->target);
+    }
+
+    public function manual(callable $callback): ManualBuilder
+    {
+        return app()
+            ->make(ManualBuilder::class, ['parent' => $this])
+            ->callback($callback)
+            ->target($this->target);
+    }
+
 }

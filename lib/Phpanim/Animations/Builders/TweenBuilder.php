@@ -49,6 +49,11 @@ class TweenBuilder extends Builder
     public function build(): callable
     {
 
+        // If from is not given, we take the current value of the property from the target
+        if (null === $this->from) {
+            $this->from = $this->read($this->property);
+        }
+
         $from = $this->resolve($this->from);
         $to = $this->resolve($this->to);
 
