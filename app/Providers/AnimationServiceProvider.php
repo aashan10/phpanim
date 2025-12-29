@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Animations\AnimationExecutor;
 use App\Enums\OperatingSystem;
-use App\Raylib\Raylib;
+use Phpanim\Raylib\Raylib;
 use App\Support\ConfigPath;
 use Illuminate\Support\ServiceProvider;
 

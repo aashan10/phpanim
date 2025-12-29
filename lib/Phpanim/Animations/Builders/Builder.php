@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Animations\Builders;
+namespace Phpanim\Animations\Builders;
 
-use App\Animations\Builders\BuilderInterface;
-use App\Animations\Builders\Traits\HasTarget;
-use App\Animations\Builders\Traits\ResolvesProperties;
+use Phpanim\Animations\Builders\BuilderInterface;
+use Phpanim\Animations\Builders\Traits\HasTarget;
+use Phpanim\Animations\Builders\Traits\ResolvesProperties;
 
 abstract class Builder implements BuilderInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Animations\Builders\Traits;
+namespace Phpanim\Animations\Builders\Traits;
 
 trait ResolvesProperties
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Animations\Builders;
+namespace Phpanim\Animations\Builders;
 
 interface BuilderInterface
 {

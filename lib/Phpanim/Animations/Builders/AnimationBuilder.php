@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Animations\Builders;
+namespace Phpanim\Animations\Builders;
 
-use App\Animations\Builders\Traits\HasTarget;
-use App\Raylib\Raylib;
+use Phpanim\Animations\Builders\Traits\HasTarget;
+use Phpanim\Raylib\Raylib;
 
 
 class AnimationBuilder extends Builder

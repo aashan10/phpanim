@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Raylib;
+namespace Phpanim\Raylib;
 
 use FFI;
 

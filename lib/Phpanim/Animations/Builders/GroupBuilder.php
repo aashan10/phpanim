@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Animations\Builders;
+namespace Phpanim\Animations\Builders;
 
-use App\Animations\Builders\AnimationBuilder;
-use App\Animations\Builders\Traits\HasTarget;
+use Phpanim\Animations\Builders\AnimationBuilder;
+use Phpanim\Animations\Builders\Traits\HasTarget;
 use Fiber;
 
 class GroupBuilder extends Builder

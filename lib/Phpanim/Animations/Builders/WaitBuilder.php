@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Animations\Builders;
+namespace Phpanim\Animations\Builders;
 
-use App\Animations\Builders\Traits\HasDuration;
-use App\Animations\Builders\Traits\ResolvesProperties;
-use App\Raylib\Raylib;
+use Phpanim\Animations\Builders\Traits\HasDuration;
+use Phpanim\Animations\Builders\Traits\ResolvesProperties;
+use Phpanim\Raylib\Raylib;
 use Fiber;
 
 class WaitBuilder extends Builder
