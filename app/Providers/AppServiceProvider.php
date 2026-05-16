@@ -10,6 +10,7 @@ use App\Setup\Tasks\CopyFilesTask;
 use App\Setup\Tasks\DownloadRaylibTask;
 use App\Setup\Tasks\ExtractArchiveTask;
 use App\Setup\Tasks\FetchReleaseMetadataTask;
+use App\Setup\Tasks\MacOsSkipQuarantineTask;
 use App\Setup\Tasks\PreprocessHeaderFileTask;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,12 +31,12 @@ class AppServiceProvider extends ServiceProvider
             app()->make(CopyFilesTask::class),
             app()->make(PreprocessHeaderFileTask::class),
             app()->make(CleanupDownloadsTask::class),
+            app()->make(MacOsSkipQuarantineTask::class),
         ];
 
         $this->app->bind(SetupCommand::class, function ($app) use ($tasks) {
             return new SetupCommand($tasks);
         });
-        //
     }
 
     /**

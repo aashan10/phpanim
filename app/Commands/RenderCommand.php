@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use Phpanim\Animations\Builders\AnimationBuilder;
-use Phpanim\Animations\Executor;
-use Phpanim\Raylib\Raylib;
 use LaravelZero\Framework\Commands\Command;
+use Phpanim\Animations\AnimationQueue;
+use Phpanim\Events\EventDispatcher;
+use Phpanim\Input\InputManager;
+use Phpanim\Plugins\PluginInterface;
+use Phpanim\Plugins\PluginManager;
+use Phpanim\Plugins\SceneManagerPlugin;
+use Phpanim\Raylib\Raylib;
+use Phpanim\UI\ComponentManagerPlugin;
 
 class RenderCommand extends Command
 {
@@ -15,11 +20,12 @@ class RenderCommand extends Command
                             {scene? : The scene to render}
                             {--raylib-dll-path= : Path to the raylib dynamic library}
                             {--raylib-definition-path= : Path to the raylib header file}
-                            {--plugin-path= : Path(s) to plugin files or directories}
+                            {--p|plugin-path= : Path to plugin directory}
                             {--width=1600 : Window width}
                             {--height=900 : Window height}
                             {--B|background-color=0xFFFFFFFF : Background color in HEX format}
-                            {--title=Phpanim : Window title}';
+                            {--title=Phpanim : Window title}
+                            {--msaa : Enable 4x multi-sample anti-aliasing}';
 
     protected $description = 'Renders an animation scene';
 
@@ -27,75 +33,46 @@ class RenderCommand extends Command
     {
         $this->info('Starting Phpanim Renderer...');
 
+        // Get systems from container
+        $dispatcher = app(EventDispatcher::class);
+        $queue = app(AnimationQueue::class);
+        $input = new InputManager($rl, $dispatcher);
+
+        if ($this->option('msaa')) {
+            $rl->SetConfigFlags(0x00000004); // FLAG_MSAA_4X_HINT
+        }
+
+        // Initialize window
         $rl->InitWindow(
-            (int)$this->option('width'),
-            (int)$this->option('height'),
-            $this->option('title')
+            (int) $this->option('width'),
+            (int) $this->option('height'),
+            (string) $this->option('title')
         );
 
-        // Create animation target
-        $target = (object) [
-            'x' => 100.0,
-            'y' => 100.0,
-            'scale' => 1.0,
-            'rotation' => 0.0,
-        ];
+        // Load plugins
+        $pluginManager = new PluginManager;
+        $this->loadPlugins($pluginManager);
 
-        // Build animation sequence
-        $animations = AnimationBuilder::make()
-            ->target($target)
-            ->group(function (AnimationBuilder $animation) {
-                $animation->tween()
-                    ->property('x')
-                    ->from(100)
-                    ->to(500)
-                    ->duration(2.0)
-                ->then()
-                ->tween()
-                    ->property('y')
-                    ->from(100)
-                    ->to(300)
-                    ->duration(2.0)
-                ->then()->build();
-            })->parallel()
-            ->then()
-            ->wait(0.5)
-            ->then()
-            ->tween()
-                ->property('x')
-                ->from(500)
-                ->to(100)
-                ->duration(2.0)
-            ->then()
-            ->animations();
+        // Initialize all plugins
+        $pluginManager->initialize();
 
-        $executor = Executor::withAnimations($animations);
-
-        $executor->start();
-
-
-        // Create colors
+        // Create background color
         $backgroundColor = $rl->GetColor(hexdec($this->option('background-color')));
-        $rectColor = $rl->GetColor(0xFF4081FFFF); // Nice blue color
 
-        while (!$rl->WindowShouldClose()) {
-
-            $executor->update();
+        // Main render loop
+        while (! $rl->WindowShouldClose()) {
+            // Begin drawing
             $rl->BeginDrawing();
             $rl->ClearBackground($backgroundColor);
 
-            // Draw animated rectangle
-            $rl->DrawRectangle(
-                (int)$target->x,
-                (int)$target->y,
-                (int)(50 * $target->scale),
-                (int)(50 * $target->scale),
-                $rectColor
-            );
+            // Poll input events
+            $input->poll();
 
-            // Draw debug info
-            $rl->DrawText("FPS: " . $rl->GetFPS(), 10, 10, 20, $rectColor);
-            $rl->DrawText(sprintf("Pos: (%.1f, %.1f)", $target->x, $target->y), 10, 70, 20, $rectColor);
+            // Update animation systems
+            $queue->update();
+
+            // Render all plugins
+            $pluginManager->render();
 
             $rl->EndDrawing();
         }
@@ -103,5 +80,55 @@ class RenderCommand extends Command
         $rl->CloseWindow();
 
         return Command::SUCCESS;
+    }
+
+    private function loadPlugins(PluginManager $pluginManager): void
+    {
+        // Load built-in plugins
+        $scenePlugin = app()->make(SceneManagerPlugin::class);
+        $pluginManager->add($scenePlugin);
+
+        $componentPlugin = app()->make(ComponentManagerPlugin::class);
+        $pluginManager->add($componentPlugin);
+
+        $pluginPath = $this->option('plugin-path');
+        if (! $pluginPath) {
+            return;
+        }
+
+        if (! is_dir($pluginPath)) {
+            $this->warn("Plugin directory does not exist: {$pluginPath}");
+
+            return;
+        }
+
+        $this->info("Loading plugins from: {$pluginPath}");
+
+        // Scan directory for PHP files
+        $pluginFiles = glob($pluginPath.'/*.php');
+        if (! $pluginFiles) {
+            $this->warn('No PHP files found in plugin directory.');
+
+            return;
+        }
+
+        $pluginCount = 0;
+        foreach ($pluginFiles as $file) {
+            try {
+                $plugin = include $file;
+
+                if ($plugin instanceof PluginInterface) {
+                    $pluginManager->add($plugin);
+                    $pluginCount++;
+                    $this->info('Loaded plugin: '.basename($file));
+                } else {
+                    $this->warn('File does not return a PluginInterface: '.basename($file));
+                }
+            } catch (\Throwable $e) {
+                $this->error('Failed to load plugin '.basename($file).': '.$e->getMessage());
+            }
+        }
+
+        $this->info("Successfully loaded {$pluginCount} plugins.");
     }
 }

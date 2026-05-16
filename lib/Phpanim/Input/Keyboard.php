@@ -12,112 +12,217 @@ use Phpanim\Raylib\Raylib;
 class Keyboard
 {
     public const SPACE = 'SPACE';
+
     public const APOSTROPHE = 'APOSTROPHE';
+
     public const COMMA = 'COMMA';
+
     public const MINUS = 'MINUS';
+
     public const PERIOD = 'PERIOD';
+
     public const SLASH = 'SLASH';
+
     public const NUM_0 = '0';
+
     public const NUM_1 = '1';
+
     public const NUM_2 = '2';
+
     public const NUM_3 = '3';
+
     public const NUM_4 = '4';
+
     public const NUM_5 = '5';
+
     public const NUM_6 = '6';
+
     public const NUM_7 = '7';
+
     public const NUM_8 = '8';
+
     public const NUM_9 = '9';
+
     public const SEMICOLON = 'SEMICOLON';
+
     public const EQUAL = 'EQUAL';
+
     public const A = 'A';
+
     public const B = 'B';
+
     public const C = 'C';
+
     public const D = 'D';
+
     public const E = 'E';
+
     public const F = 'F';
+
     public const G = 'G';
+
     public const H = 'H';
+
     public const I = 'I';
+
     public const J = 'J';
+
     public const K = 'K';
+
     public const L = 'L';
+
     public const M = 'M';
+
     public const N = 'N';
+
     public const O = 'O';
+
     public const P = 'P';
+
     public const Q = 'Q';
+
     public const R = 'R';
+
     public const S = 'S';
+
     public const T = 'T';
+
     public const U = 'U';
+
     public const V = 'V';
+
     public const W = 'W';
+
     public const X = 'X';
+
     public const Y = 'Y';
+
     public const Z = 'Z';
+
     public const LEFT_BRACKET = 'LEFT_BRACKET';
+
     public const BACKSLASH = 'BACKSLASH';
+
     public const RIGHT_BRACKET = 'RIGHT_BRACKET';
+
     public const GRAVE = 'GRAVE';
+
     public const ESCAPE = 'ESCAPE';
+
     public const ENTER = 'ENTER';
+
     public const TAB = 'TAB';
+
     public const BACKSPACE = 'BACKSPACE';
+
     public const INSERT = 'INSERT';
+
     public const DELETE = 'DELETE';
+
     public const RIGHT = 'RIGHT';
+
     public const LEFT = 'LEFT';
+
     public const DOWN = 'DOWN';
+
     public const UP = 'UP';
+
     public const PAGE_UP = 'PAGE_UP';
+
     public const PAGE_DOWN = 'PAGE_DOWN';
+
     public const HOME = 'HOME';
+
     public const END = 'END';
+
     public const CAPS_LOCK = 'CAPS_LOCK';
+
     public const SCROLL_LOCK = 'SCROLL_LOCK';
+
     public const NUM_LOCK = 'NUM_LOCK';
+
     public const PRINT_SCREEN = 'PRINT_SCREEN';
+
     public const PAUSE = 'PAUSE';
+
     public const F1 = 'F1';
+
     public const F2 = 'F2';
+
     public const F3 = 'F3';
+
     public const F4 = 'F4';
+
     public const F5 = 'F5';
+
     public const F6 = 'F6';
+
     public const F7 = 'F7';
+
     public const F8 = 'F8';
+
     public const F9 = 'F9';
+
     public const F10 = 'F10';
+
     public const F11 = 'F11';
+
     public const F12 = 'F12';
+
     public const KP_0 = 'KP_0';
+
     public const KP_1 = 'KP_1';
+
     public const KP_2 = 'KP_2';
+
     public const KP_3 = 'KP_3';
+
     public const KP_4 = 'KP_4';
+
     public const KP_5 = 'KP_5';
+
     public const KP_6 = 'KP_6';
+
     public const KP_7 = 'KP_7';
+
     public const KP_8 = 'KP_8';
+
     public const KP_9 = 'KP_9';
+
     public const KP_DECIMAL = 'KP_DECIMAL';
+
     public const KP_DIVIDE = 'KP_DIVIDE';
+
     public const KP_MULTIPLY = 'KP_MULTIPLY';
+
     public const KP_SUBTRACT = 'KP_SUBTRACT';
+
     public const KP_ADD = 'KP_ADD';
+
     public const KP_ENTER = 'KP_ENTER';
+
     public const KP_EQUAL = 'KP_EQUAL';
+
     public const LEFT_SHIFT = 'LEFT_SHIFT';
+
     public const LEFT_CONTROL = 'LEFT_CONTROL';
+
     public const LEFT_ALT = 'LEFT_ALT';
+
     public const LEFT_SUPER = 'LEFT_SUPER';
+
     public const RIGHT_SHIFT = 'RIGHT_SHIFT';
+
     public const RIGHT_CONTROL = 'RIGHT_CONTROL';
+
     public const RIGHT_ALT = 'RIGHT_ALT';
+
     public const RIGHT_SUPER = 'RIGHT_SUPER';
+
     public const MENU = 'MENU';
 
     private array $previousKeyState = [];
+
     private array $keyNames = [
         32 => self::SPACE,
         39 => self::APOSTROPHE,
@@ -178,7 +283,7 @@ class Keyboard
         345 => self::RIGHT_CONTROL,
         346 => self::RIGHT_ALT,
         347 => self::RIGHT_SUPER,
-        348 => self::MENU
+        348 => self::MENU,
     ];
 
     public function __construct(
@@ -194,9 +299,9 @@ class Keyboard
             $isPressed = $this->raylib->IsKeyDown($keycode);
             $wasPressed = $this->previousKeyState[$keycode] ?? false;
 
-            if ($isPressed && !$wasPressed) {
+            if ($isPressed && ! $wasPressed) {
                 $this->dispatcher->dispatch('keyboard.pressed', new KeyPressed($keycode, $keyName, $timestamp));
-            } elseif (!$isPressed && $wasPressed) {
+            } elseif (! $isPressed && $wasPressed) {
                 $this->dispatcher->dispatch('keyboard.released', new KeyReleased($keycode, $keyName, $timestamp));
             }
 

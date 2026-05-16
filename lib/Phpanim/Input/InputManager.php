@@ -10,7 +10,9 @@ use Phpanim\Raylib\Raylib;
 class InputManager
 {
     public readonly Keyboard $keyboard;
+
     public readonly Mouse $mouse;
+
     public readonly Gamepad $gamepad;
 
     public function __construct(

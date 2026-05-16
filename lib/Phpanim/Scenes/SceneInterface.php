@@ -11,4 +11,6 @@ interface SceneInterface
     public function isDone(): bool;
 
     public function render(): void;
+
+    public function reset(): void;
 }
