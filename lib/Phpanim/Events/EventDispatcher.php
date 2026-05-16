@@ -7,6 +7,7 @@ namespace Phpanim\Events;
 class EventDispatcher
 {
     private array $listeners = [];
+
     private array $oneTimeListeners = [];
 
     public function on(string $event, callable $listener): void
@@ -24,11 +25,17 @@ class EventDispatcher
         if ($listener === null) {
             unset($this->listeners[$event]);
             unset($this->oneTimeListeners[$event]);
+
             return;
         }
 
-        $this->removeListener($this->listeners[$event] ?? [], $listener);
-        $this->removeListener($this->oneTimeListeners[$event] ?? [], $listener);
+        if (isset($this->listeners[$event])) {
+            $this->removeListener($this->listeners[$event], $listener);
+        }
+
+        if (isset($this->oneTimeListeners[$event])) {
+            $this->removeListener($this->oneTimeListeners[$event], $listener);
+        }
     }
 
     public function dispatch(string $event, mixed $data = null): void
@@ -49,7 +56,7 @@ class EventDispatcher
 
     public function hasListeners(string $event): bool
     {
-        return !empty($this->listeners[$event]) || !empty($this->oneTimeListeners[$event]);
+        return ! empty($this->listeners[$event]) || ! empty($this->oneTimeListeners[$event]);
     }
 
     private function removeListener(array &$listeners, callable $target): void
