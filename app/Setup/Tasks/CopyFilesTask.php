@@ -35,20 +35,26 @@ final readonly class CopyFilesTask implements TaskInterface
         }
 
         $destinationPath = ConfigPath::raylibPath();
+        $destinationLibPath = $destinationPath.'/'.$destinationLibFileName;
 
         if (! is_dir($destinationPath)) {
             mkdir($destinationPath, 0755, true);
         }
 
         $platformSpecificFilePattern = [
-            OperatingSystem::WINDOWS->value => '/raylib.dll/',
-            OperatingSystem::MACOS->value => '/libraylib.(\d+(\.)*)+.dylib/',
-            OperatingSystem::LINUX->value => '/libraylib.(\d+(\.)*)+.so/',
+            OperatingSystem::WINDOWS->value => '/^raylib\.dll$/i',
+            OperatingSystem::MACOS->value => '/^libraylib(?:\.\d+(?:\.\d+)*)?\.dylib$/',
+            OperatingSystem::LINUX->value => '/^libraylib(?:\.\d+(?:\.\d+)*)?\.so$/',
         ];
 
         copy(from: $extractedPath.'/include/raylib.h', to: $destinationPath.'/raylib.h');
 
         $selectedPattern = $platformSpecificFilePattern[$context->os->value];
+        $copiedLibrary = false;
+
+        if (file_exists($destinationLibPath)) {
+            unlink($destinationLibPath);
+        }
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(sprintf('%s/%s', rtrim($extractedPath, '/'), 'lib'), \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -57,11 +63,16 @@ final readonly class CopyFilesTask implements TaskInterface
 
         foreach ($iterator as $file) {
             if ($file->isFile() && preg_match($selectedPattern, $file->getFilename())) {
-                copy(from: $file->getPathname(), to: $destinationPath.'/'.$destinationLibFileName);
+                $copiedLibrary = copy(from: $file->getPathname(), to: $destinationLibPath);
+                if ($copiedLibrary) {
+                    break;
+                }
             }
         }
 
-        Assert::fileExists($destinationPath.'/'.$destinationLibFileName, 'Failed to copy the platform-specific raylib file.');
+        Assert::true($copiedLibrary, 'Failed to copy the platform-specific raylib file.');
+        Assert::fileExists($destinationLibPath, 'Failed to copy the platform-specific raylib file.');
+        Assert::true(filesize($destinationLibPath) > 0, 'Copied raylib library file is empty.');
         Assert::fileExists($destinationPath.'/raylib.h', 'Failed to copy raylib.h file.');
 
         return $context;

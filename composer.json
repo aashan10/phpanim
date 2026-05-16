@@ -49,5 +49,9 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "bin": ["phpanim"]
+    "bin": ["phpanim"],
+    "scripts": {
+        "docs:start": "npm --prefix docs/ start",
+        "docs:build": "npm --prefix docs/ build"
+    }
 }

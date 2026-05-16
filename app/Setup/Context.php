@@ -29,21 +29,21 @@ final class Context
     public function with(array $changes): self
     {
         return new self(
-            arch:          $this->differentiate($changes, 'arch'),
-            os:            $this->differentiate($changes, 'os'),
-            io:            $this->differentiate($changes, 'io'),
-            force:         $this->differentiate($changes, 'force'),
+            arch: $this->differentiate($changes, 'arch'),
+            os: $this->differentiate($changes, 'os'),
+            io: $this->differentiate($changes, 'io'),
+            force: $this->differentiate($changes, 'force'),
             raylibVersion: $this->differentiate($changes, 'raylibVersion'),
-            assets:        $this->differentiate($changes, 'assets'),
+            assets: $this->differentiate($changes, 'assets'),
             selectedAsset: $this->differentiate($changes, 'selectedAsset'),
-            archivePath:   $this->differentiate($changes, 'archivePath'),
+            archivePath: $this->differentiate($changes, 'archivePath'),
             extractedPath: $this->differentiate($changes, 'extractedPath'),
         );
     }
 
     private function differentiate(array $changes, string $property): mixed
     {
-        if (!isset($changes[$property])) {
+        if (! isset($changes[$property])) {
             return $this->$property;
         }
 

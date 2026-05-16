@@ -17,7 +17,7 @@ final readonly class PreprocessHeaderFileTask implements TaskInterface
 
     public function execute(Context $context): Context
     {
-        if (!file_exists(ConfigPath::raylibPath('raylib.h'))) {
+        if (! file_exists(ConfigPath::raylibPath('raylib.h'))) {
             $context->io->error('raylib.h file not found. Please ensure that raylib is installed correctly.');
             throw new \RuntimeException('raylib.h file is missing.');
         }
