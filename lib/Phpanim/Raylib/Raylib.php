@@ -6,10 +6,9 @@ namespace Phpanim\Raylib;
 
 use FFI;
 
-final readonly class Raylib
+class Raylib
 {
-    public function __construct(public FFI $ffi)
-    {}
+    public function __construct(public readonly FFI $ffi) {}
 
     public function __call(string $name, array $params): mixed
     {
@@ -27,6 +26,7 @@ final readonly class Raylib
         foreach ($values as $key => $value) {
             $struct->{$key} = $value;
         }
+
         return $struct;
     }
 }
