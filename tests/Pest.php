@@ -43,3 +43,37 @@ function something(): void
 {
     // ..
 }
+
+/**
+ * Run an animation closure inside a Fiber to completion and return the frame
+ * count. Throws if the fiber doesn't terminate within $maxFrames.
+ */
+function runAnimation(callable $animation, int $maxFrames = 100_000): int
+{
+    $fiber  = new Fiber($animation);
+    $frames = 1;
+    $fiber->start();
+
+    while ($fiber->isSuspended()) {
+        if ($frames >= $maxFrames) {
+            throw new \RuntimeException("Animation did not terminate within {$maxFrames} frames.");
+        }
+        $fiber->resume();
+        $frames++;
+    }
+
+    return $frames;
+}
+
+/**
+ * Build a minimal AnimationBuilder wired to the given MockRaylib so
+ * individual builder tests don't have to repeat this boilerplate.
+ */
+function makeParent(\Tests\Support\MockRaylib $raylib): \Phpanim\Animations\Builders\AnimationBuilder
+{
+    return new \Phpanim\Animations\Builders\AnimationBuilder(
+        $raylib,
+        new \Phpanim\Events\EventDispatcher(),
+        new \Phpanim\Animations\AnimationQueue(),
+    );
+}

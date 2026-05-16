@@ -9,7 +9,6 @@ it('has correct enum values', function () {
     expect(OperatingSystem::LINUX->value)->toBe('linux');
 });
 
-
 it('detects macOS correctly', function () {
     if (PHP_OS_FAMILY === 'Darwin') {
         expect(OperatingSystem::detect())->toBe(OperatingSystem::MACOS);

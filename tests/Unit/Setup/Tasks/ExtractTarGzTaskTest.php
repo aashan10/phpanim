@@ -56,4 +56,3 @@ it('throws exception when archive file does not exist', function () {
     expect(fn () => $this->task->execute($contextWithNonExistentPath))
         ->toThrow(\RuntimeException::class, 'Archive file does not exist.');
 });
-

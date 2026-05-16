@@ -66,4 +66,3 @@ it('throws exception when zip file cannot be opened', function () {
     expect(fn () => $this->task->execute($contextWithInvalidZip))
         ->toThrow(\RuntimeException::class, 'Failed to open zip archive.');
 });
-

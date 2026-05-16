@@ -26,10 +26,7 @@ beforeEach(function () {
 
 });
 
-
 it('has correct task name', function () {
     expect($this->task->getName())
         ->toBe('Copying Files');
 });
-
-
