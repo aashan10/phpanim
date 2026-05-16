@@ -4,40 +4,43 @@ declare(strict_types=1);
 
 namespace Phpanim\Animations\Builders;
 
+use Fiber;
 use Phpanim\Animations\Builders\Traits\HasDuration;
 use Phpanim\Animations\Builders\Traits\HasEasing;
 use Phpanim\Animations\Builders\Traits\ManipulatesProperty;
 use Phpanim\Animations\Builders\Traits\ResolvesProperties;
 use Phpanim\Raylib\Raylib;
-use Fiber;
 
 class TweenBuilder extends Builder
 {
-    use ManipulatesProperty, HasDuration, HasEasing, ResolvesProperties;
+    use HasDuration, HasEasing, ManipulatesProperty, ResolvesProperties;
 
     private mixed $from = null;
+
     private mixed $to = null;
 
     public function __construct(
         private AnimationBuilder|GroupBuilder $parent,
         private Raylib $raylib,
-    )
-    {}
+    ) {}
 
     /**
-     * @param float|callable(float): float $value
+     * @param  float|callable(float): float  $value
      */
     public function from(callable|float $value): self
     {
         $this->from = $value;
+
         return $this;
     }
+
     /**
-     * @param float|callable(float): float $value
+     * @param  float|callable(float): float  $value
      */
     public function to(callable|float $value): self
     {
         $this->to = $value;
+
         return $this;
     }
 
@@ -50,21 +53,21 @@ class TweenBuilder extends Builder
     {
 
         // If from is not given, we take the current value of the property from the target
-        if (null === $this->from) {
+        if ($this->from === null) {
             $this->from = $this->read($this->property);
         }
 
         $from = $this->resolve($this->from);
         $to = $this->resolve($this->to);
 
-        if (!is_float($from) || !is_float($to)) {
+        if (! is_float($from) || ! is_float($to)) {
             throw new \InvalidArgumentException("The 'from' and 'to' values must resolve to float values.");
         }
 
         $duration = $this->resolve($this->duration);
         $easing = $this->resolve($this->easing);
 
-        return function() use ($from, $to, $duration, $easing) {
+        return function () use ($from, $to, $duration, $easing) {
 
             $t = 0.0;
 

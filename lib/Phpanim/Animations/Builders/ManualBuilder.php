@@ -14,12 +14,12 @@ class ManualBuilder extends Builder
 
     public function __construct(
         private AnimationBuilder|GroupBuilder $parent
-    )
-    {}
+    ) {}
 
     public function callback(callable $callback): self
     {
         $this->callback = $callback;
+
         return $this;
     }
 
@@ -30,8 +30,8 @@ class ManualBuilder extends Builder
 
     public function build(): callable
     {
-        if (!is_callable($this->callback)) {
-            throw new \InvalidArgumentException("A callback must be provided for manual animations.");
+        if (! is_callable($this->callback)) {
+            throw new \InvalidArgumentException('A callback must be provided for manual animations.');
         }
 
         return $this->callback;

@@ -9,7 +9,9 @@ use Fiber;
 class AnimationQueue
 {
     private array $queue = [];
+
     private array $runningAnimations = [];
+
     private array $interrupts = [];
 
     public function addAnimation(string $key, callable $animation, bool $interruptible = true): void
@@ -21,7 +23,7 @@ class AnimationQueue
         $this->queue[] = [
             'key' => $key,
             'animation' => $animation,
-            'interruptible' => $interruptible
+            'interruptible' => $interruptible,
         ];
     }
 
@@ -41,12 +43,12 @@ class AnimationQueue
     public function update(): void
     {
         // Process queued animations
-        while (!empty($this->queue)) {
+        while (! empty($this->queue)) {
             $item = array_shift($this->queue);
             $key = $item['key'];
-            
+
             // Skip if key is already running and not interruptible
-            if (isset($this->runningAnimations[$key]) && !$item['interruptible']) {
+            if (isset($this->runningAnimations[$key]) && ! $item['interruptible']) {
                 continue;
             }
 
@@ -62,6 +64,7 @@ class AnimationQueue
             if (isset($this->interrupts[$key])) {
                 unset($this->runningAnimations[$key]);
                 unset($this->interrupts[$key]);
+
                 continue;
             }
 

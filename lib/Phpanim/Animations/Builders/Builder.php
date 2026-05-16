@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Phpanim\Animations\Builders;
 
-use Phpanim\Animations\Builders\BuilderInterface;
 use Phpanim\Animations\Builders\Traits\HasTarget;
 use Phpanim\Animations\Builders\Traits\ResolvesProperties;
 
@@ -43,4 +42,31 @@ abstract class Builder implements BuilderInterface
             ->target($this->target);
     }
 
+    public function spring(): SpringBuilder
+    {
+        return app()
+            ->make(SpringBuilder::class, ['parent' => $this])
+            ->target($this->target);
+    }
+
+    public function momentum(): MomentumBuilder
+    {
+        return app()
+            ->make(MomentumBuilder::class, ['parent' => $this])
+            ->target($this->target);
+    }
+
+    public function inertia(): InertiaBuilder
+    {
+        return app()
+            ->make(InertiaBuilder::class, ['parent' => $this])
+            ->target($this->target);
+    }
+
+    public function physics(): PhysicsBuilder
+    {
+        return app()
+            ->make(PhysicsBuilder::class, ['parent' => $this])
+            ->target($this->target);
+    }
 }

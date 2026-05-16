@@ -9,17 +9,19 @@ use Fiber;
 class Executor
 {
     private array $animations = [];
+
     private ?Fiber $fiber = null;
 
     public static function withAnimations(array $animations): self
     {
-        $instance = new self();
+        $instance = new self;
         $instance->animations = $animations;
 
         return $instance;
     }
 
-    public function start() {
+    public function start()
+    {
         if ($this->fiber !== null) {
             return $this;
         }
@@ -33,8 +35,9 @@ class Executor
         $this->fiber->start();
     }
 
-    public function update() {
-        if(!$this->fiber->isTerminated()) {
+    public function update()
+    {
+        if (! $this->fiber->isTerminated()) {
             $this->fiber->resume();
         }
     }

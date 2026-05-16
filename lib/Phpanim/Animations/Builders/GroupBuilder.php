@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Phpanim\Animations\Builders;
 
-use Phpanim\Animations\Builders\AnimationBuilder;
-use Phpanim\Animations\Builders\Traits\HasTarget;
 use Fiber;
+use Phpanim\Animations\Builders\Traits\HasTarget;
 
 class GroupBuilder extends Builder
 {
@@ -14,10 +13,10 @@ class GroupBuilder extends Builder
 
     public function __construct(
         private AnimationBuilder $parent,
-    )
-    {}
+    ) {}
 
     private bool $isParallel = false;
+
     private array $animations = [];
 
     public function then(): AnimationBuilder
@@ -28,16 +27,19 @@ class GroupBuilder extends Builder
     public function parallel(): self
     {
         $this->isParallel = true;
+
         return $this;
     }
 
     public function sequential(): self
     {
         $this->isParallel = false;
+
         return $this;
     }
+
     /**
-     * @param callable(AnimationBuilder): mixed $callback
+     * @param  callable(AnimationBuilder): mixed  $callback
      */
     public function group(callable $callback): self
     {
@@ -46,20 +48,21 @@ class GroupBuilder extends Builder
         $animationBuilder->target($this->target);
         $callback($animationBuilder);
 
-
         $this->animations = $animationBuilder->animations();
+
         return $this;
     }
 
     public function add(BuilderInterface $animation): self
     {
         $this->animations[] = $animation->build();
+
         return $this;
     }
 
     public function build(): callable
     {
-        return match($this->isParallel) {
+        return match ($this->isParallel) {
             true => $this->buildParallel(),
             false => $this->buildSequential(),
         };
@@ -79,7 +82,7 @@ class GroupBuilder extends Builder
                 $fiber->start();
             }
 
-            while (!empty($fibers)) {
+            while (! empty($fibers)) {
                 foreach ($fibers as $index => $fiber) {
                     if ($fiber->isSuspended()) {
                         $fiber->resume();
@@ -90,7 +93,7 @@ class GroupBuilder extends Builder
                     }
                 }
 
-                if (!empty($fibers)) {
+                if (! empty($fibers)) {
                     Fiber::suspend();
                 }
             }

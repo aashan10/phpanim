@@ -57,5 +57,4 @@ trait HasTarget
 
         return $this;
     }
-
 }

@@ -7,5 +7,6 @@ namespace Phpanim\Animations\Builders;
 interface BuilderInterface
 {
     public function then(): BuilderInterface;
+
     public function build(): callable;
 }

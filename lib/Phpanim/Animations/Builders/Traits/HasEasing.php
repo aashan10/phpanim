@@ -11,7 +11,7 @@ trait HasEasing
     protected ?Closure $easing = null;
 
     /**
-     * @param callable (float): float $easing
+     * @param  callable (float): float  $easing
      */
     public function easing(callable $easing): static
     {

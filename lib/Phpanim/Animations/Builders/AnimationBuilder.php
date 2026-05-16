@@ -9,7 +9,6 @@ use Phpanim\Animations\Builders\Traits\HasTarget;
 use Phpanim\Events\EventDispatcher;
 use Phpanim\Raylib\Raylib;
 
-
 class AnimationBuilder extends Builder
 {
     use HasTarget;
@@ -20,8 +19,7 @@ class AnimationBuilder extends Builder
         private Raylib $raylib,
         private EventDispatcher $dispatcher,
         private AnimationQueue $queue
-    )
-    {}
+    ) {}
 
     public static function make(): self
     {
@@ -52,6 +50,7 @@ class AnimationBuilder extends Builder
     public function add(BuilderInterface $animation): self
     {
         $this->animations[] = $animation->build();
+
         return $this;
     }
 
@@ -66,6 +65,7 @@ class AnimationBuilder extends Builder
         $builder->target($this->target);
 
         $builder->group($callback);
+
         return $builder;
     }
 
@@ -77,17 +77,16 @@ class AnimationBuilder extends Builder
 
     public function on(string $eventName, callable $callback): self
     {
-        $this->dispatcher->on($eventName, function($eventData) use ($callback, $eventName) {
+        $this->dispatcher->on($eventName, function ($eventData) use ($callback, $eventName) {
             $animationBuilder = clone $this;
             $animationBuilder->reset();
             $animationBuilder->target($this->target);
 
-
             $callback($animationBuilder, $eventData);
 
-            if (!empty($animationBuilder->animations())) {
-                $key = $eventName . '_' . uniqid();
-                $animation = function() use ($animationBuilder) {
+            if (! empty($animationBuilder->animations())) {
+                $key = $eventName.'_'.uniqid();
+                $animation = function () use ($animationBuilder) {
                     foreach ($animationBuilder->animations() as $anim) {
                         $anim();
                     }
@@ -96,26 +95,28 @@ class AnimationBuilder extends Builder
                 $this->queue->addImmediateAnimation($key, $animation);
             }
         });
+
         return $this;
     }
 
     public function waitFor(string $eventName): self
     {
-        $waitAnimation = function() use ($eventName) {
+        $waitAnimation = function () use ($eventName) {
             $eventReceived = false;
 
-            $listener = function() use (&$eventReceived) {
+            $listener = function () use (&$eventReceived) {
                 $eventReceived = true;
             };
 
             $this->dispatcher->once($eventName, $listener);
 
-            while (!$eventReceived) {
+            while (! $eventReceived) {
                 \Fiber::suspend();
             }
         };
 
         $this->animations[] = $waitAnimation;
+
         return $this;
     }
 }

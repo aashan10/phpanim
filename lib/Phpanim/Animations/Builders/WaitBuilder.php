@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Phpanim\Animations\Builders;
 
+use Fiber;
 use Phpanim\Animations\Builders\Traits\HasDuration;
 use Phpanim\Animations\Builders\Traits\ResolvesProperties;
 use Phpanim\Raylib\Raylib;
-use Fiber;
 
 class WaitBuilder extends Builder
 {
@@ -16,8 +16,7 @@ class WaitBuilder extends Builder
     public function __construct(
         private AnimationBuilder|GroupBuilder $parent,
         private Raylib $raylib,
-    )
-    {}
+    ) {}
 
     public function then(): BuilderInterface
     {
@@ -40,5 +39,4 @@ class WaitBuilder extends Builder
 
         };
     }
-
 }
